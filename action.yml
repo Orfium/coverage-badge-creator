@@ -1,0 +1,27 @@
+name: 'Create a Coverage Badge in AWS S3'
+description: 'Create a Coverage Badge in AWS S3'
+inputs:
+  coverage_file:
+    description: "Path to the coverage file"
+    required: true
+  badge_name:
+    description: "Name of the badge"
+    required: true
+  bucket_name:
+    description: "Bucket to add the badge to"
+    required: true
+  aws_access_key:
+    description: "AWS access key"
+    required: true
+  aws_secret_key:
+    description: "AWS secret key"
+    required: true
+  coverage_percentage_regex:
+    description: "Regex to use in order to parse the coverage percentage. Default is proper regex for Python."
+    required: true
+runs:
+  using: "docker"
+  image: "Dockerfile"
+branding:
+  icon: 'link'
+  color: 'green'

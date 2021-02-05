@@ -1,0 +1,2 @@
+boto3==1.16.63
+requests==2.25.1  # https://github.com/psf/requests
