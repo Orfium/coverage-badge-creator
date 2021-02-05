@@ -51,7 +51,7 @@ jobs:
       - name: Tear down the Stack
         run: docker-compose -f local.yml down
       - name: Update Coverage badge
-        uses: ./.github/actions/coverage_badge
+        uses: Orfium/coverage-badge-creator@master
         with:
           coverage_file: coverage.txt
           badge_name: "code-cov-prod.svg"

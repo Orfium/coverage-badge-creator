@@ -18,9 +18,9 @@ jobs:
           node-version: '12.x'
       - name: Install dependencies
         run: yarn install
-#      - name: Release
-#        env:
-#          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-#          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-#        run: npx semantic-release
+      - name: Release
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: npx semantic-release
 
