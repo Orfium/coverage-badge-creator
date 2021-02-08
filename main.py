@@ -34,7 +34,11 @@ def compute_coverage():
         f"REGEX {COVERAGE_PERCENTAGE_REGEX}")
     with open(COVERAGE_FILE) as f:
         return int(
-            re.findall(COVERAGE_PERCENTAGE_REGEX, f.read())[0].replace("%", "")
+            float(
+                re.findall(COVERAGE_PERCENTAGE_REGEX, f.read())[0].replace(
+                    "%",
+                    "")
+            )
         )
 
 
@@ -106,7 +110,8 @@ def upload_file(file_name, bucket, object_name=None):
                              aws_access_key_id=ACCESS_KEY,
                              aws_secret_access_key=SECRET_KEY)
     try:
-        s3_client.upload_file(file_name, bucket, object_name, ExtraArgs={'ContentType': 'image/svg+xml'})
+        s3_client.upload_file(file_name, bucket, object_name,
+                              ExtraArgs={'ContentType': 'image/svg+xml'})
     except ClientError as e:
         logging.error(e)
         return False
