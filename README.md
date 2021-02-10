@@ -11,12 +11,6 @@ This actions performs the following tasks sequentially:
 * calls shields.io API in order to download a proper badge based on the parsed coverage.
 * uploads the badge in an AWS S3 bucket, 
 
-This action can be used in order to create a release in Github for a repository
-and add in the release notes the relevant entries for the release that are
-found in the Changelog. The changelog format that is currently supported is the
-one that is created
-by [commitizen-action](https://github.com/commitizen-tools/commitizen-action).
-
 ## Usage
 
 An example usage of the action is the following:
