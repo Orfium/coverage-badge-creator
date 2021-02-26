@@ -49,6 +49,7 @@ jobs:
         with:
           coverage_file: coverage.txt
           badge_name: "code-cov-prod.svg"
+          upload_coverage_file: true
           bucket_name: "orfium-badges-bucket"
           aws_access_key: ${{ secrets.BADGES_AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.BADGES_AWS_SECRET_ACCESS_KEY }}
@@ -63,6 +64,7 @@ jobs:
 | --------------------------- | ---------------------------------------------| ------- |
 | `coverage_file`             | Path to coverage file                        | -       |
 | `badge_name`                | Name of the badge file                       | -       |
+| `upload_coverage_file`      | Upload coverage file too                     | False   |
 | `bucket_name`               | Name of the bucket to upload the badge to    | -       |
 | `aws_access_key`            | AWS Access Key                               | -       |
 | `aws_secret_key`            | AWS Secret Key                               | -       |
