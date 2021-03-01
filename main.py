@@ -6,13 +6,16 @@ import boto3
 import requests
 from botocore.exceptions import ClientError
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(message)s',
-                    handlers=[logging.StreamHandler()])
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(message)s',
+    handlers=[logging.StreamHandler()]
+)
 
 COVERAGE_FILE = os.getenv("INPUT_COVERAGE_FILE", "coverage.txt")
 S3_PATH = os.getenv("INPUT_S3_PATH")
 BADGE_NAME = os.getenv("INPUT_BADGE_NAME")
+UPLOAD_COVERAGE_FILE = os.getenv("INPUT_UPLOAD_COVERAGE_FILE", False)
 BUCKET_NAME = os.getenv("INPUT_BUCKET_NAME")
 ACCESS_KEY = os.getenv("INPUT_AWS_ACCESS_KEY")
 SECRET_KEY = os.getenv("INPUT_AWS_SECRET_KEY")
@@ -85,12 +88,18 @@ def download_badge(coverage, color, download_file_path):
     return download_file_path
 
 
-def upload_file(file_name, bucket, object_name=None):
+def upload_file(
+        file_name,
+        bucket,
+        content_type="text/plain",
+        object_name=None
+):
     """
     Upload a file to an S3 bucket.
 
     :param str file_name: File to upload
     :param str bucket: Bucket to upload to
+    :param str content_type: Content type of file to be uploaded
     :param str|None object_name: S3 object name. If not specified then
         file_name is used
     :return: True if file was uploaded, else False
@@ -111,11 +120,40 @@ def upload_file(file_name, bucket, object_name=None):
                              aws_secret_access_key=SECRET_KEY)
     try:
         s3_client.upload_file(file_name, bucket, object_name,
-                              ExtraArgs={'ContentType': 'image/svg+xml'})
+                              ExtraArgs={'ContentType': content_type})
     except ClientError as e:
         logging.error(e)
         return False
     return True
+
+
+def upload_coverage_file(
+        coverage_percentage,
+        badge_name,
+        bucket
+):
+    """
+    Upload a file with the coverage percentage to an S3 bucket.
+
+    :param int coverage_percentage: Current coverage  percentage
+    :param str badge_name: Name of the badge file
+    :param str bucket: Bucket to upload to
+    :param str|None object_name: S3 object name. If not specified then
+        file_name is used
+    :return: True if file was uploaded, else False
+    :rtype: bool
+    """
+    coverage_file = os.path.splitext(badge_name)[0] + ".txt"
+    temp_coverage_file = "coverage-percentage.tx"
+    logging.info(
+        f"Writing coverage percentage to file {coverage_file} to {bucket} ."
+    )
+    with open(temp_coverage_file, 'w') as f:
+        logging.info(f"Coverage  : {coverage_percentage}")
+        f.write(str(coverage_percentage))
+
+    # Upload the file
+    upload_file(temp_coverage_file, bucket, "text/plain", coverage_file)
 
 
 def main():
@@ -126,7 +164,13 @@ def main():
     color = get_badge_color(coverage)
     temp_badge = 'badge.svg'
     download_badge(coverage, color, temp_badge)
-    upload_file(temp_badge, BUCKET_NAME, BADGE_NAME)
+    upload_file(temp_badge, BUCKET_NAME, 'image/svg+xml', BADGE_NAME)
+    if UPLOAD_COVERAGE_FILE:
+        upload_coverage_file(
+            coverage,
+            BADGE_NAME,
+            BUCKET_NAME,
+        )
 
 
 if __name__ == "__main__":

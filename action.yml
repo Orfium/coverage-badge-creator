@@ -7,6 +7,9 @@ inputs:
   badge_name:
     description: "Name of the badge"
     required: true
+  upload_coverage_file:
+    description: "Upload coverage_file on S3"
+    required: false
   bucket_name:
     description: "Bucket to add the badge to"
     required: true
