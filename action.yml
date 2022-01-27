@@ -20,8 +20,11 @@ inputs:
     description: "AWS secret key"
     required: true
   coverage_percentage_regex:
-    description: "Regex to use in order to parse the coverage percentage. Default is proper regex for Python."
-    required: true
+    description: "Regex to use in order to get the coverage percentage."
+    required: false
+  coverage_percentage_json_path:
+    description: "Path to use in order to get the coverage percentage."
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"

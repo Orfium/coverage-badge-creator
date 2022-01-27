@@ -1,2 +1,3 @@
-boto3==1.16.63
+boto3==1.16.63  # https://github.com/boto/boto3
 requests==2.25.1  # https://github.com/psf/requests
+dpath==2.0.5  # https://github.com/dpath-maintainers/dpath-python
