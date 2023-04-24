@@ -64,13 +64,15 @@ jobs:
 | `badge_name`                    | Name of the badge file                          | -         | Yes       |
 | `upload_coverage_file`          | Upload coverage file too                        | False     | No        |
 | `bucket_name`                   | Name of the bucket to upload the badge to       | -         | Yes       |
-| `aws_access_key`                | AWS Access Key                                  | -         | Yes       |
-| `aws_secret_key`                | AWS Secret Key                                  | -         | Yes       |
+| `aws_access_key`                | AWS Access Key                                  | -         | No        |
+| `aws_secret_key`                | AWS Secret Key                                  | -         | No        |
 | `coverage_percentage_regex`     | Regex to use in order to get the coverage       | -         | No        |
 | `coverage_percentage_json_path` | Path to use in order to get the coverage        | -         | No        |
 
 **At least one of the arguments `coverage_percentage_regex` or `coverage_percentage_json_path` must be set in 
 order for the action to run based on the format of the coverage report.**
+
+**To use an OIDC IAM role from your environment do not define the `aws_access_key` and `aws_secret_key` input variables**
 
 ### Coverage Percentage Regex Examples
 
