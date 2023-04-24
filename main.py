@@ -7,6 +7,7 @@ import dpath.util
 import boto3
 import requests
 from botocore.exceptions import ClientError
+from typing import Optional
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -39,6 +40,28 @@ GREEN_PERCENTAGE_THRESHOLD = 80
 YELLOW_GREEN_PERCENTAGE_THRESHOLD = 70
 YELLOW_PERCENTAGE_THRESHOLD = 60
 ORANGE_PERCENTAGE_THRESHOLD = 50
+
+
+def create_s3_client(
+    aws_access_key_id: Optional[str] = None, aws_secret_access_key: Optional[str] = None
+) -> boto3.client:
+    """
+    Create an Amazon S3 client using the provided AWS access key and secret key, or
+    fall back to the IAM role associated with the environment if no access key and
+    secret key are provided.
+
+    :param aws_access_key_id: AWS access key ID for authentication (optional)
+    :type aws_access_key_id: Optional[str]
+    :param aws_secret_access_key: AWS secret access key for authentication (optional)
+    :type aws_secret_access_key: Optional[str]
+    :return: S3 client object for interacting with Amazon S3 service
+    :rtype: boto3.client
+    """
+    session = boto3.session.Session(
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+    return session.client(service_name="s3", region_name="us-east-1")
 
 
 def get_coverage() -> float:
@@ -128,7 +151,8 @@ def upload_file(
     file_name: str,
     bucket: str,
     content_type: str = "text/plain",
-    object_name: str = ""
+    object_name: str = "",
+    s3_client: Optional[boto3.client] = None
 ) -> bool:
     """
     Upload a file to an S3 bucket.
@@ -145,17 +169,12 @@ def upload_file(
         f"Upload {file_name} to {bucket} "
         f"as {object_name or file_name}"
     )
-    # If S3 object_name was not specified, use file_name
     if not object_name:
         object_name = file_name
 
-    # Upload the file
-    s3_client = boto3.client(
-        service_name="s3",
-        region_name="us-east-1",
-        aws_access_key_id=ACCESS_KEY,
-        aws_secret_access_key=SECRET_KEY,
-    )
+    if not s3_client:
+        s3_client = create_s3_client(ACCESS_KEY, SECRET_KEY)
+
     try:
         s3_client.upload_file(
             file_name,
